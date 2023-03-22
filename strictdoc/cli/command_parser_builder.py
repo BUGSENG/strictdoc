@@ -17,6 +17,7 @@ EXPORT_FORMATS = [
     "reqifz-sdoc",
     "spdx",
     "dot",
+    "ecl"
 ]
 EXCEL_PARSERS = ["basic"]
 
