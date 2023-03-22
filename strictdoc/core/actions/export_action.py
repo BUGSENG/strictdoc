@@ -3,6 +3,7 @@ import sys
 from pathlib import Path
 from typing import Optional
 
+from strictdoc.backend.ecl.export.ecl_generator import ECLGenerator
 from strictdoc.backend.excel.export.excel_generator import ExcelGenerator
 from strictdoc.backend.reqif.reqif_export import ReqIFExport
 from strictdoc.backend.sdoc.errors.document_tree_error import DocumentTreeError
@@ -77,3 +78,7 @@ class ExportAction:
                 traceability_index=self.traceability_index,
                 output_reqif_root=output_reqif_root,
             )
+
+        if "ecl" in self.project_config.export_formats:
+            output_ecl_root = f"{self.project_config.export_output_dir}"
+            ECLGenerator.export_tree(self.traceability_index, output_ecl_root)
