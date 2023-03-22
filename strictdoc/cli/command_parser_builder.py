@@ -18,6 +18,7 @@ EXPORT_FORMATS = [
     "sdoc",
     "doxygen",
     "spdx",
+    "ecl",
 ]
 EXCEL_PARSERS = ["basic"]
 
