@@ -1,7 +1,7 @@
 import os
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
 
 from strictdoc.backend.ecl.export.ecl_generator import ECLGenerator
 from strictdoc.backend.excel.export.excel_generator import ExcelGenerator
@@ -199,7 +199,8 @@ class ExportAction:
             )
         if "ecl" in self.project_config.export_formats:
             output_ecl_root = f"{self.project_config.output_dir}"
-            ECLGenerator().export_tree(self.traceability_index, output_ecl_root)
+            requirements_filter: List[str] = self.project_config.requirements_regex
+            ECLGenerator().export_tree(self.traceability_index, output_ecl_root, requirements_filter)
 
     def export_sdoc(self) -> None:
         assert self.project_config.input_paths

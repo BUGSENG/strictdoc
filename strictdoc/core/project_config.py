@@ -112,6 +112,7 @@ class ProjectConfig:
         chromedriver: Optional[str],
         section_behavior: Optional[str],
         statistics_generator: Optional[str],
+        requirements_regex: List[str],
     ) -> None:
         assert isinstance(environment, SDocRuntimeEnvironment)
         if source_root_path is not None:
@@ -210,6 +211,9 @@ class ProjectConfig:
 
         self.statistics_generator: Optional[str] = statistics_generator
 
+        self.requirements_regex: List[str] = requirements_regex
+
+
     @staticmethod
     def default_config(environment: SDocRuntimeEnvironment) -> "ProjectConfig":
         assert isinstance(environment, SDocRuntimeEnvironment)
@@ -241,6 +245,7 @@ class ProjectConfig:
             chromedriver=None,
             section_behavior=ProjectConfig.DEFAULT_SECTION_BEHAVIOR,
             statistics_generator=None,
+            requirements_regex=[],
         )
 
     # Some server command settings can override the project config settings.
@@ -322,6 +327,8 @@ class ProjectConfig:
         self.excel_export_fields = export_config.fields
         self.view = export_config.view
         self.chromedriver = export_config.chromedriver
+
+        self.requirements_regex = export_config.requirements_regex
 
         if (
             export_config.enable_mathjax
@@ -524,6 +531,8 @@ class ProjectConfigLoader:
 
         section_behavior: str = ProjectConfig.DEFAULT_SECTION_BEHAVIOR
         statistics_generator: Optional[str] = None
+
+        requirements_regex: List[str] = []
 
         if "project" in config_dict:
             project_content = config_dict["project"]
@@ -784,4 +793,5 @@ class ProjectConfigLoader:
             chromedriver=chromedriver,
             section_behavior=section_behavior,
             statistics_generator=statistics_generator,
+            requirements_regex=requirements_regex
         )

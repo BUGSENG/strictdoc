@@ -1,7 +1,7 @@
 import os
 import re
 from pathlib import Path
-from typing import Iterator, Generator
+from typing import List, Iterator, Generator
 
 from strictdoc.backend.sdoc.models.document import SDocDocument
 from strictdoc.backend.sdoc.models.node import SDocNode, SDocNodeField
@@ -21,6 +21,7 @@ class ECLGenerator:
     def export_tree(
         traceability_index: TraceabilityIndex,
         output_ecl_root: str,
+        requirements_filter: List[str],
     ):
         Path(output_ecl_root).mkdir(parents=True, exist_ok=True)
 
@@ -36,7 +37,7 @@ class ECLGenerator:
             )
 
             ECLGenerator._export_single_document(
-                document, traceability_index, document_out_file
+                document, traceability_index, document_out_file, requirements_filter
             )
 
     @staticmethod
@@ -44,21 +45,22 @@ class ECLGenerator:
         document: SDocDocument,
         traceability_index: TraceabilityIndex,
         document_out_file,
+        requirements_filter: List[str],
     ):
         document_iterator: DocumentCachingIterator = (
             traceability_index.get_document_iterator(document)
         )
         doc_full_path = document_iterator.document.meta.input_doc_full_path
-        requirements = list(extract_requirements(document_iterator))
+        requirements = list(extract_requirements(document_iterator, requirements_filter))
 
         with open(document_out_file, mode="w", encoding="utf-8") as ecl_file:
             if requirements:
                 ecl_file.write(
                     f'-doc_begin={maybe_ecl_quote(f"Automatically extracted from {doc_full_path}")}\n\n'
                 )
-                fmt_requirements_list = ",\n    ".join(requirements)
+                fmt_requirements_list = ",\n".join(requirements)
                 ecl_file.write(
-                    f'-requirements_list+=\n    {fmt_requirements_list}\n\n'
+                    f'-requirements_list+=\n{fmt_requirements_list}\n\n'
                 )
                 ecl_file.write(
                     f'-doc_end\n'
@@ -87,6 +89,7 @@ def get_node_is_requirement(node: SDocElementIF) -> bool:
 
 def extract_requirements(
     document_iterator: DocumentCachingIterator,
+    requirements_filter: List[str],
 ) -> Generator[str, None, None]:
     for node, _ in document_iterator.all_content():
         if not get_node_is_requirement(node):
@@ -94,4 +97,9 @@ def extract_requirements(
         node_fields = enumerate_fields(node)
         for field in node_fields:
             if field.field_name == "UID":
-                yield field.get_text_value()
+                uid = field.get_text_value()
+                for regex in requirements_filter:
+                    if re.match(regex, uid):
+                        yield uid
+                        continue
+                continue
