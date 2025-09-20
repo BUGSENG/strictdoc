@@ -144,6 +144,7 @@ class ExportCommandConfig:
         reqif_enable_mid: bool,
         view: Optional[str],
         chromedriver: Optional[str],
+        requirements_regex: Optional[List[str]],
     ):
         assert isinstance(input_paths, list), f"{input_paths}"
         self.input_paths: List[str] = input_paths
@@ -163,6 +164,7 @@ class ExportCommandConfig:
         self.reqif_enable_mid: bool = reqif_enable_mid
         self.view: Optional[str] = view
         self.chromedriver: Optional[str] = chromedriver
+        self.requirements_regex: Optional[List[str]] = requirements_regex
 
     def get_path_to_config(self) -> str:
         # FIXME: The control flow can be improved.
@@ -288,6 +290,7 @@ class SDocArgsParser:
             self.args.reqif_enable_mid,
             self.args.view,
             self.args.chromedriver,
+            self.args.requirements_regex,
         )
 
     def get_import_config_reqif(self, _: Any) -> ImportReqIFCommandConfig:

@@ -261,6 +261,13 @@ class CommandParserBuilder:
             "If not given, chromedriver is downloaded and saved to "
             "strictdoc cache.",
         )
+        command_parser_export.add_argument(
+            "--requirements-regex",
+            type=str,
+            help="Regex to match requirement UIDs to be exported",
+            nargs="+",
+            action="extend",
+        )
         add_config_argument(command_parser_export)
 
     @staticmethod

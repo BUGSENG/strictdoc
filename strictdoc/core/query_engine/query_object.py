@@ -8,7 +8,7 @@ from strictdoc.backend.sdoc.models.grammar_element import GrammarElement
 from strictdoc.backend.sdoc.models.model import (
     SDocExtendedElementIF,
 )
-from strictdoc.backend.sdoc.models.node import SDocNode, SDocNodeField
+from strictdoc.backend.sdoc.models.node import SDocNode, SDocNodeField, SDocCompositeNode
 from strictdoc.backend.sdoc.models.section import SDocSection
 from strictdoc.backend.sdoc_source_code.models.source_file_info import (
     SourceFileTraceabilityInfo,
@@ -270,6 +270,7 @@ class QueryObject:
         field_name = expression.field_name
         if (
             isinstance(node, SDocNode)
+            or isinstance(node, SDocCompositeNode)
             and node.is_requirement()
             and node.node_type == "REQUIREMENT"
         ):
