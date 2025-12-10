@@ -3,3 +3,11 @@ tox
 toml
 setuptools
 packaging
+
+# Selenium is not currently pinned from requirements, but a breaking change
+# happened in 4.41.0 (No module named 'selenium.webdriver.chrome.webdriver')
+selenium==4.40.0
+
+# Chardet is installed with tox which does not pin its version. But requests
+# only works with a specific subset, see <https://github.com/psf/requests/blob/4bd79e397304d46dfccd76f36c07f66c0295ff82/src/requests/__init__.py#L79>.
+chardet==5.2.0
